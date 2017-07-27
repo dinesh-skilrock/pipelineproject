@@ -1,15 +1,22 @@
-
 pipeline {
     agent any
     stages {
         stage('Build') {
             steps {
-                sh 'echo "Hello World"'
-                sh '''
-                    echo "Multiline shell steps works too"
-                    ls -lah
-                '''
+                sh './gradlew build'
             }
+        }
+        stage('Test') {
+            steps {
+                sh './gradlew check'
+            }
+        }
+    }
+
+    post {
+        always {
+            archive 'build/libs/**/*.jar'
+            junit 'build/reports/**/*.xml'
         }
     }
 }
